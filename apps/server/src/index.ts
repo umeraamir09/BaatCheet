@@ -72,7 +72,7 @@ fastify.get<{ Params: { channelId: string } }>(
 // ---------------------------------------------------------------------------
 await voiceManager.init();
 
-const address = await fastify.listen({ port: PORT });
+const address = await fastify.listen({ port: PORT, host: "0.0.0.0" });
 fastify.log.info(`Server listening on ${address}`);
 
 // ---------------------------------------------------------------------------
