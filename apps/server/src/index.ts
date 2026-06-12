@@ -14,11 +14,15 @@ import jwksClient from "jwks-rsa";
 const PORT = parseInt(process.env.SERVER_PORT || "3001", 10);
 const RAW_CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
 const ALLOWED_ORIGINS = RAW_CORS_ORIGIN.split(",").map((s) => s.trim());
-async function corsOrigin(origin: string | undefined): Promise<string | boolean> {
+function corsOrigin(
+  origin: string | undefined,
+  callback: (err: Error | null, origin: string | boolean | RegExp) => void,
+): void {
   if (!origin || ALLOWED_ORIGINS.includes(origin)) {
-    return origin || ALLOWED_ORIGINS[0];
+    callback(null, origin ?? ALLOWED_ORIGINS[0]);
+  } else {
+    callback(null, false);
   }
-  return false;
 }
 const LISTEN_IP = process.env.MEDIASOUP_LISTEN_IP || "127.0.0.1";
 const CONVEX_SITE_URL = process.env.CONVEX_SITE_URL || "";
