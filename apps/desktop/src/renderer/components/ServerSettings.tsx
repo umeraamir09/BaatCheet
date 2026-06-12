@@ -171,16 +171,16 @@ export function ServerSettings() {
 
                   return (
                     <div key={m._id} className="relative flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[var(--color-bg-tertiary)] transition-colors group">
-                      {m.user.imageUrl ? (
-                        <img src={m.user.imageUrl} alt={m.user.name} className="w-9 h-9 rounded-full object-cover" />
+                      {m.user.avatarUrl ? (
+                        <img src={m.user.avatarUrl} alt={m.user.displayName} className="w-9 h-9 rounded-full object-cover" />
                       ) : (
                         <div className="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm">
-                          {m.user.name?.[0]?.toUpperCase() || "?"}
+                          {m.user.displayName?.[0]?.toUpperCase() || "?"}
                         </div>
                       )}
                       <div className="flex-1 flex flex-col">
                         <span className="text-sm font-medium text-[var(--color-text-primary)]">
-                          {m.user.name} {isMe && <span className="text-xs text-[var(--color-text-muted)]">(You)</span>}
+                          {m.user.displayName} {isMe && <span className="text-xs text-[var(--color-text-muted)]">(You)</span>}
                         </span>
                         <span>{getRoleBadge(m.role)}</span>
                       </div>

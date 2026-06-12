@@ -63,17 +63,17 @@ export function FriendsView() {
     return (
       <div key={f._id} className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-[var(--color-bg-tertiary)] transition-colors group">
         <div className="relative">
-          {f.friend.imageUrl ? (
-            <img src={f.friend.imageUrl} alt={f.friend.name} className="w-10 h-10 rounded-full object-cover" />
+          {f.friend.avatarUrl ? (
+            <img src={f.friend.avatarUrl} alt={f.friend.displayName} className="w-10 h-10 rounded-full object-cover" />
           ) : (
             <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-              {f.friend.name?.[0]?.toUpperCase() || "?"}
+              {f.friend.displayName?.[0]?.toUpperCase() || "?"}
             </div>
           )}
           <div className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-[var(--color-bg-secondary)] ${isOnline ? "bg-green-500" : "bg-gray-500"}`} />
         </div>
         <div className="flex-1 min-w-0">
-          <span className="text-sm font-medium text-[var(--color-text-primary)]">{f.friend.name}</span>
+          <span className="text-sm font-medium text-[var(--color-text-primary)]">{f.friend.displayName}</span>
           <span className={`text-xs ml-2 ${isOnline ? "text-green-400" : "text-gray-500"}`}>
             {isOnline ? "Online" : "Offline"}
           </span>
@@ -128,12 +128,12 @@ export function FriendsView() {
                 <h4 className="text-xs uppercase tracking-wide font-bold text-[var(--color-text-secondary)] mb-2">Incoming Requests</h4>
                 {pendingIncoming.map((f) => (
                   <div key={f._id} className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-[var(--color-bg-tertiary)]">
-                    {f.friend?.imageUrl ? (
-                      <img src={f.friend.imageUrl} alt={f.friend?.name} className="w-8 h-8 rounded-full object-cover" />
+                    {f.friend?.avatarUrl ? (
+                      <img src={f.friend.avatarUrl} alt={f.friend?.displayName} className="w-8 h-8 rounded-full object-cover" />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-xs">{f.friend?.name?.[0] || "?"}</div>
+                      <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-xs">{f.friend?.displayName?.[0] || "?"}</div>
                     )}
-                    <span className="flex-1 text-sm text-[var(--color-text-primary)]">{f.friend?.name || "Unknown"}</span>
+                    <span className="flex-1 text-sm text-[var(--color-text-primary)]">{f.friend?.displayName || "Unknown"}</span>
                     <div className="flex gap-1">
                       <button onClick={() => respondRequest({ friendId: f._id, action: "accept" })} className="px-3 py-1 text-xs bg-green-500/20 text-green-400 rounded hover:bg-green-500/30 transition-colors">Accept</button>
                       <button onClick={() => respondRequest({ friendId: f._id, action: "decline" })} className="px-3 py-1 text-xs bg-red-500/20 text-red-400 rounded hover:bg-red-500/30 transition-colors">Decline</button>
@@ -147,12 +147,12 @@ export function FriendsView() {
                 <h4 className="text-xs uppercase tracking-wide font-bold text-[var(--color-text-secondary)] mb-2">Outgoing Requests</h4>
                 {pendingOutgoing.map((f) => (
                   <div key={f._id} className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-[var(--color-bg-tertiary)]">
-                    {f.friend?.imageUrl ? (
-                      <img src={f.friend.imageUrl} alt={f.friend?.name} className="w-8 h-8 rounded-full object-cover" />
+                    {f.friend?.avatarUrl ? (
+                      <img src={f.friend.avatarUrl} alt={f.friend?.displayName} className="w-8 h-8 rounded-full object-cover" />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-xs">{f.friend?.name?.[0] || "?"}</div>
+                      <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-xs">{f.friend?.displayName?.[0] || "?"}</div>
                     )}
-                    <span className="flex-1 text-sm text-[var(--color-text-primary)]">{f.friend?.name || "Unknown"}</span>
+                    <span className="flex-1 text-sm text-[var(--color-text-primary)]">{f.friend?.displayName || "Unknown"}</span>
                     <span className="text-xs text-yellow-400 flex items-center gap-1"><Clock size={12} /> Pending</span>
                     <button onClick={() => cancelRequest({ friendId: f._id })} className="p-1 text-[var(--color-text-muted)] hover:text-red-400 rounded"><X size={14} /></button>
                   </div>

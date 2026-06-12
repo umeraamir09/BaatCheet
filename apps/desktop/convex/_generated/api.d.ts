@@ -8,11 +8,13 @@
  * @module
  */
 
+import type * as auth from "../auth.js";
 import type * as channels from "../channels.js";
 import type * as dms from "../dms.js";
 import type * as files from "../files.js";
 import type * as friends from "../friends.js";
 import type * as helpers from "../helpers.js";
+import type * as http from "../http.js";
 import type * as invites from "../invites.js";
 import type * as messages from "../messages.js";
 import type * as reactions from "../reactions.js";
@@ -26,11 +28,13 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  auth: typeof auth;
   channels: typeof channels;
   dms: typeof dms;
   files: typeof files;
   friends: typeof friends;
   helpers: typeof helpers;
+  http: typeof http;
   invites: typeof invites;
   messages: typeof messages;
   reactions: typeof reactions;

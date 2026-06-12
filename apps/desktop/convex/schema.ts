@@ -1,13 +1,19 @@
 import { defineSchema, defineTable } from "convex/server";
+import { authTables } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+  ...authTables,
+
   users: defineTable({
-    clerkId: v.string(),
-    name: v.string(),
-    email: v.string(),
-    imageUrl: v.optional(v.string()),
-  }).index("by_clerk_id", ["clerkId"]),
+    username: v.string(),
+    displayName: v.optional(v.string()),
+    email: v.optional(v.string()),
+    avatarUrl: v.optional(v.string()),
+    discordId: v.optional(v.string()),
+    authProvider: v.union(v.literal("discord"), v.literal("password")),
+    profileComplete: v.optional(v.boolean()),
+  }).index("by_username", ["username"]),
 
   servers: defineTable({
     name: v.string(),

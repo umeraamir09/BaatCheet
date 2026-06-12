@@ -15,7 +15,6 @@
     "typescript": "^5.3.0"
   },
   "trustedDependencies": [
-    "@clerk/shared",
     "baatcheet-desktop",
     "mediasoup"
   ]

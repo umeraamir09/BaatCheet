@@ -24,16 +24,16 @@ export function MembersSidebar({ serverId }: { serverId: Id<"servers"> }) {
           if (!m.user) return null;
           return (
             <div key={m._id} className="flex items-center gap-3 p-2 hover:bg-[var(--color-bg-tertiary)] rounded-md transition-colors cursor-pointer">
-              {m.user.imageUrl ? (
-                <img src={m.user.imageUrl} alt={m.user.name} className="w-8 h-8 rounded-full object-cover" />
+              {m.user.avatarUrl ? (
+                <img src={m.user.avatarUrl} alt={m.user.displayName ?? m.user.username} className="w-8 h-8 rounded-full object-cover" />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-xs">
-                  {m.user.name[0]?.toUpperCase()}
+                  {(m.user.displayName ?? m.user.username)?.[0]?.toUpperCase()}
                 </div>
               )}
               <div className="flex flex-col min-w-0">
                 <span className="font-medium text-[var(--color-text-primary)] text-sm truncate flex items-center gap-1">
-                  {m.user.name}
+                  {m.user.displayName ?? m.user.username}
                   {getRoleIcon(m.role)}
                 </span>
               </div>

@@ -15,7 +15,7 @@ export const sendRequest = mutation({
 
     const targetUser = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("name"), args.username.trim()))
+      .withIndex("by_username", (q) => q.eq("username", args.username.trim().toLowerCase()))
       .first();
 
     if (!targetUser) {
@@ -151,12 +151,8 @@ export const searchUsers = query({
     if (!args.query.trim()) return [];
     return await ctx.db
       .query("users")
-      .filter((q) =>
-        q.and(
-          q.neq(q.field("_id"), userId),
-          q.eq(q.field("name"), args.query.trim())
-        )
-      )
+      .withIndex("by_username", (q) => q.eq("username", args.query.trim().toLowerCase()))
+      .filter((q) => q.neq(q.field("_id"), userId))
       .take(10);
   },
 });

@@ -45,3 +45,15 @@
 - [ ] General security audit (authentication, authorization, WebRTC security).
 - [ ] Staging environment testing.
 - [ ] Bug squashing and final polish.
+
+## Phase 7: Auth Migration & User Identity
+*Goal: Migrate from Clerk to Convex auth with Discord OAuth and enhanced user identity system.*
+- [ ] Migrate authentication from Clerk to Convex Auth.
+- [ ] Implement Discord OAuth integration.
+- [ ] Preserve existing usernames and profile pictures during migration.
+- [ ] Update user object schema: add `username` field (lowercase, no spaces/special characters, used for friend adding only).
+- [ ] Add `displayName` field to user object (shown in lists and messages).
+- [ ] Implement Discord profile auto-fetch option for display name during sign-up flow.
+- [ ] Update friend system to use new username format for searches and requests.
+- [ ] Update all UI components to display `displayName` instead of old username format.
+- [ ] Test migration path for existing users (data integrity, login flow).

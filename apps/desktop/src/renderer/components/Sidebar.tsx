@@ -1,11 +1,12 @@
-import { UserButton } from "@clerk/clerk-react";
+import { useAuthActions } from "@convex-dev/auth/react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useAppStore } from "../hooks/useAppStore";
-import { MessageSquare, Plus, UserCheck, Settings, LogIn, Loader2 } from "lucide-react";
+import { MessageSquare, Plus, UserCheck, Settings, LogIn, Loader2, LogOut } from "lucide-react";
 import { useState } from "react";
 
 export function Sidebar() {
+  const { signOut } = useAuthActions();
   const me = useQuery(api.users.getMe);
   const servers = useQuery(api.servers.list);
   const createServer = useMutation(api.servers.create);
@@ -192,13 +193,21 @@ export function Sidebar() {
           <Settings size={16} />
         </button>
 
-         <UserButton 
-            appearance={{
-              elements: {
-                avatarBox: "w-12 h-12",
-              },
-            }}
-          />
+        {/* User Avatar / Logout */}
+        <button
+          onClick={() => signOut()}
+          className="w-12 h-12 rounded-full flex items-center justify-center bg-[var(--color-bg-secondary)] hover:bg-red-500 hover:text-white transition-all duration-200 group relative"
+          title="Sign out"
+        >
+          {me?.avatarUrl ? (
+            <img src={me.avatarUrl} alt={me.displayName} className="w-full h-full rounded-full object-cover" />
+          ) : (
+            <span className="font-bold text-white">{me?.displayName?.[0]?.toUpperCase() || "?"}</span>
+          )}
+          <div className="absolute inset-0 rounded-full bg-red-500/0 group-hover:bg-red-500/80 flex items-center justify-center transition-all duration-200">
+            <LogOut size={16} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+        </button>
       </div>
     </div>
   );

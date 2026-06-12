@@ -41,10 +41,10 @@ export function VoiceChannelView({ channelName }: VoiceChannelViewProps) {
           {me && (
             <div className="flex flex-col items-center gap-2">
               <div className="relative">
-                {me.imageUrl ? (
+                {me.avatarUrl ? (
                   <img
-                    src={me.imageUrl}
-                    alt={me.name}
+                    src={me.avatarUrl}
+                    alt={me.displayName}
                     className={`w-16 h-16 rounded-full object-cover transition-all ${
                       speakingUsers[me._id]
                         ? "ring-4 ring-green-500 ring-offset-2 ring-offset-[var(--color-bg-primary)]"
@@ -59,7 +59,7 @@ export function VoiceChannelView({ channelName }: VoiceChannelViewProps) {
                         : "ring-4 ring-transparent"
                     }`}
                   >
-                    {me.name?.[0]?.toUpperCase() || "?"}
+                    {me.displayName?.[0]?.toUpperCase() || "?"}
                   </div>
                 )}
                 {isMuted && (
@@ -69,7 +69,7 @@ export function VoiceChannelView({ channelName }: VoiceChannelViewProps) {
                 )}
               </div>
               <span className="text-sm font-medium text-[var(--color-text-primary)]">
-                {me.name} (You)
+                {me.displayName} (You)
               </span>
             </div>
           )}
@@ -82,10 +82,10 @@ export function VoiceChannelView({ channelName }: VoiceChannelViewProps) {
             return (
               <div key={peer.peerId} className="flex flex-col items-center gap-2">
                 <div className="relative">
-                  {member?.imageUrl ? (
+                  {member?.avatarUrl ? (
                     <img
-                      src={member.imageUrl}
-                      alt={member.name || "User"}
+                      src={member.avatarUrl}
+                      alt={member.displayName || "User"}
                       className={`w-16 h-16 rounded-full object-cover transition-all ${
                         isSpeaking
                           ? "ring-4 ring-green-500 ring-offset-2 ring-offset-[var(--color-bg-primary)]"
@@ -100,12 +100,12 @@ export function VoiceChannelView({ channelName }: VoiceChannelViewProps) {
                           : "ring-4 ring-transparent"
                       }`}
                     >
-                      {member?.name?.[0]?.toUpperCase() || "?"}
+                      {member?.displayName?.[0]?.toUpperCase() || "?"}
                     </div>
                   )}
                 </div>
                 <span className="text-sm font-medium text-[var(--color-text-primary)]">
-                  {member?.name || "Loading..."}
+                  {member?.displayName || "Loading..."}
                 </span>
               </div>
             );

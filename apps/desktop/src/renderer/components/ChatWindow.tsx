@@ -234,9 +234,9 @@ export function ChatWindow() {
                 requestCall(
                   otherUser._id,
                   me._id,
-                  me.name,
+                  me.displayName ?? me.username,
                   activeDmThreadId || "",
-                  otherUser.name
+                  otherUser.displayName ?? otherUser.username
                 );
               }}
               className="p-2 text-[var(--color-text-muted)] hover:text-green-400 hover:bg-green-500/10 rounded-lg transition-colors"
@@ -273,14 +273,14 @@ export function ChatWindow() {
                       className="flex items-center gap-2 text-xs text-[var(--color-text-muted)] mb-1 ml-10 cursor-pointer hover:text-[var(--color-text-primary)] select-none before:content-[''] before:w-6 before:h-3 before:border-l-2 before:border-t-2 before:border-[var(--color-border)] before:rounded-tl-md before:mr-1 before:-mt-2"
                       onClick={() => scrollToMessage(msg.repliedMessage!._id)}
                     >
-                      {msg.repliedMessage.sender?.imageUrl && (
+                      {msg.repliedMessage.sender?.avatarUrl && (
                         <img
-                          src={msg.repliedMessage.sender.imageUrl}
+                          src={msg.repliedMessage.sender.avatarUrl}
                           className="w-4 h-4 rounded-full object-cover"
                         />
                       )}
                       <span className="font-semibold hover:underline">
-                        @{msg.repliedMessage.sender?.name}
+                        @{msg.repliedMessage.sender?.displayName}
                       </span>
                       <span className="truncate max-w-[50vw]">
                         {msg.repliedMessage.text}
@@ -290,22 +290,22 @@ export function ChatWindow() {
 
                   {/* Message Layout */}
                   <div className="flex items-start gap-4">
-                    {msg.sender?.imageUrl ? (
+                    {msg.sender?.avatarUrl ? (
                       <img
-                        src={msg.sender.imageUrl}
-                        alt={msg.sender.name}
+                        src={msg.sender.avatarUrl}
+                        alt={msg.sender.displayName}
                         className="w-10 h-10 rounded-full mt-0.5 object-cover cursor-pointer hover:opacity-80"
                       />
                     ) : (
                       <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold mt-0.5 shrink-0 cursor-pointer hover:opacity-80">
-                        {msg.sender?.name?.[0] || "?"}
+                        {msg.sender?.displayName?.[0] || "?"}
                       </div>
                     )}
 
                     <div className="flex flex-col flex-1 min-w-0">
                       <div className="flex items-baseline gap-2">
                         <span className="font-medium text-[var(--color-text-primary)] hover:underline cursor-pointer">
-                          {msg.sender?.name || "Unknown"}
+                          {msg.sender?.displayName || "Unknown"}
                         </span>
                         <span className="text-[11px] text-[var(--color-text-muted)]">
                           {formatTime(msg._creationTime)}
@@ -335,7 +335,7 @@ export function ChatWindow() {
                               acc[r.emoji].count++;
                               if (r.userId === me?._id) acc[r.emoji].me = true;
                               acc[r.emoji].users.push(
-                                r.user?.name || "Unknown",
+                                r.user?.displayName || "Unknown",
                               );
                               return acc;
                             }, {}),
@@ -417,7 +417,7 @@ export function ChatWindow() {
                         setReplyingTo({
                           id: msg._id,
                           text: msg.text,
-                          sender: msg.sender?.name || "Unknown",
+                          sender: msg.sender?.displayName || "Unknown",
                         })
                       }
                       className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] rounded"

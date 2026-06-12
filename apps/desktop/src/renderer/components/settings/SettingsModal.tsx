@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { X, Mic, Speaker, KeyRound, ToggleLeft, ToggleRight, Loader2 } from "lucide-react";
+import { X, Mic, Speaker, KeyRound, ToggleLeft, ToggleRight } from "lucide-react";
 import { useAppStore, useAudioSettingsStore } from "../../hooks/useAppStore";
-import { updateAudioStream, setAudioSinkId, getAudioConstraints } from "../../hooks/useVoice";
+import { updateAudioStream } from "../../hooks/useVoice";
 
 type Tab = "voice" | "keybindings";
 

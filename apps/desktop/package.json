@@ -15,7 +15,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@clerk/clerk-react": "^5.61.3",
+    "@auth/core": "^0.41.1",
+    "@convex-dev/auth": "^0.0.94",
     "@electron/get": "^5.0.0",
     "convex": "^1.40.0",
     "emoji-picker-react": "^4.19.1",
@@ -66,6 +67,10 @@
         "to": "."
       }
     ],
+    "protocols": {
+      "name": "BaatCheet",
+      "schemes": ["baatcheet"]
+    },
     "win": {
       "target": "nsis",
       "icon": "public/icon.ico"

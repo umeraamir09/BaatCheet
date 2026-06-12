@@ -121,7 +121,7 @@ export const send = mutation({
       if (metadata.size > MAX_FILE_SIZE) {
         throw new Error("File exceeds maximum size of 5MB");
       }
-      if (!ALLOWED_MIME_TYPES.includes(metadata.contentType)) {
+      if (!metadata.contentType || !ALLOWED_MIME_TYPES.includes(metadata.contentType)) {
         await ctx.storage.delete(args.fileId);
         throw new Error("File type not allowed. Only JPEG, PNG, GIF, and WebP images are supported.");
       }

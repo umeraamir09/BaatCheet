@@ -1,6 +1,6 @@
-import { useUser, useAuth } from "@clerk/clerk-react";
+import { useConvexAuth, useAuthToken } from "@convex-dev/auth/react";
 import { useEffect, useRef } from "react";
-import { useMutation, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useAppStore } from "./hooks/useAppStore";
 import { Sidebar } from "./components/Sidebar";
@@ -12,36 +12,24 @@ import { FriendsView } from "./components/FriendsView";
 import { ServerSettings } from "./components/ServerSettings";
 import { SettingsModal } from "./components/settings/SettingsModal";
 import { connectWithAuth } from "./hooks/useVoice";
+import { ProfileSetup } from "./components/ProfileSetup";
 
 function App() {
-  const { user } = useUser();
-  const { getToken } = useAuth();
-  const syncUser = useMutation(api.users.sync);
+  const { isAuthenticated } = useConvexAuth();
+  const token = useAuthToken();
   const me = useQuery(api.users.getMe);
   const view = useAppStore((state) => state.view);
   const authReady = useRef(false);
 
   useEffect(() => {
-    if (user) {
-      syncUser({
-        clerkId: user.id,
-        name: user.username || user.firstName || "Unknown",
-        email: user.primaryEmailAddress?.emailAddress || "",
-        imageUrl: user.imageUrl,
-      });
-    }
-  }, [user, syncUser]);
-
-  useEffect(() => {
-    if (me && !authReady.current) {
+    if (me && me.profileComplete && !authReady.current) {
       authReady.current = true;
 
       const initSocket = async () => {
-        const token = await getToken();
         const socket = await connectWithAuth(token || "");
 
         const identify = () => {
-          socket.emit("voice:identify", { userId: me._id, name: me.name });
+          socket.emit("voice:identify", { userId: me._id, name: me.displayName ?? me.username });
         };
 
         identify();
@@ -59,17 +47,27 @@ function App() {
         authReady.current = false;
       };
     }
-  }, [me, getToken]);
+  }, [me, token]);
+
+  if (isAuthenticated && me && !me.profileComplete) {
+    return <ProfileSetup />;
+  }
+
+  if (!me) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[var(--color-bg-primary)]">
+        <div className="text-[var(--color-text-secondary)]">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen w-full bg-[var(--color-bg-primary)] overflow-hidden text-[var(--color-text-primary)]">
       <Sidebar />
       {view === "servers" ? <ChannelSidebar /> : view === "dms" ? <DMSidebar /> : null}
       {view === "friends" ? <FriendsView /> : <ChatWindow />}
-      {/* Global Voice Call Overlays */}
       <IncomingCallBanner />
       <ActiveCallOverlay />
-      {/* Modals */}
       <ServerSettings />
       <SettingsModal />
     </div>
@@ -77,4 +75,3 @@ function App() {
 }
 
 export default App;
-

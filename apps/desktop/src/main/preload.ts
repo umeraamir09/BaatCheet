@@ -4,14 +4,14 @@ const api = {
   getVersion: () => ipcRenderer.invoke('app:getVersion'),
   
   on: (channel: string, listener: (...args: unknown[]) => void) => {
-    const validChannels = ['message:receive', 'auth:stateChanged', 'shortcut:triggered'];
+    const validChannels = ['message:receive', 'auth:stateChanged', 'auth:callback', 'shortcut:triggered'];
     if (validChannels.includes(channel)) {
       ipcRenderer.on(channel, (_event, ...args) => listener(...args));
     }
   },
   
   off: (channel: string, listener: (...args: unknown[]) => void) => {
-    const validChannels = ['message:receive', 'auth:stateChanged', 'shortcut:triggered'];
+    const validChannels = ['message:receive', 'auth:stateChanged', 'auth:callback', 'shortcut:triggered'];
     if (validChannels.includes(channel)) {
       ipcRenderer.off(channel, listener);
     }
@@ -25,7 +25,7 @@ const api = {
   },
 
   invoke: (channel: string, ...args: unknown[]) => {
-    const validChannels = ['shortcuts:register'];
+    const validChannels = ['shortcuts:register', 'auth:openExternal'];
     if (validChannels.includes(channel)) {
       return ipcRenderer.invoke(channel, ...args);
     }

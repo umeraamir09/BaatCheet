@@ -1,7 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 import { Device } from "mediasoup-client";
-import type { Transport, Producer, Consumer } from "mediasoup-client/lib/types.js";
 import { useVoiceStore, useAudioSettingsStore } from "./useAppStore";
 import { useAppStore } from "./useAppStore";
 
@@ -102,10 +101,10 @@ export function setAudioSinkId(audioElement: HTMLAudioElement, deviceId: string)
 
 interface VoiceSession {
   device: Device;
-  sendTransport: Transport;
-  recvTransport: Transport;
-  producer: Producer | null;
-  consumers: Map<string, Consumer>;
+  sendTransport: any;
+  recvTransport: any;
+  producer: any;
+  consumers: Map<string, any>;
   audioElements: Map<string, HTMLAudioElement>;
   audioContext?: AudioContext;
   analyser?: AnalyserNode;
@@ -431,7 +430,7 @@ export function useVoice() {
   );
 
   const acceptCall = useCallback(
-    (callerSocketId: string, calleeId: string, calleeName: string, dmThreadId: string, callerUserId: string) => {
+    (callerSocketId: string, calleeId: string, calleeName: string, _dmThreadId: string, callerUserId: string) => {
       const socket = getSocket();
       socket.emit("voice:call-accept", { callerSocketId, calleeId, calleeName });
       setIncomingCall(null);

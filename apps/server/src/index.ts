@@ -5,15 +5,38 @@ import helmet from "@fastify/helmet";
 import { Server, Socket } from "socket.io";
 import type { Producer, Consumer, WebRtcTransport } from "mediasoup/types";
 import { voiceManager } from "./voiceManager.js";
-import { verifyToken } from "@clerk/backend";
+import jwt from "jsonwebtoken";
+import jwksClient from "jwks-rsa";
 
 // ---------------------------------------------------------------------------
 // Config
 // ---------------------------------------------------------------------------
 const PORT = parseInt(process.env.SERVER_PORT || "3001", 10);
-const CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
+const RAW_CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
+const ALLOWED_ORIGINS = RAW_CORS_ORIGIN.split(",").map((s) => s.trim());
+async function corsOrigin(origin: string | undefined): Promise<string | boolean> {
+  if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+    return origin || ALLOWED_ORIGINS[0];
+  }
+  return false;
+}
 const LISTEN_IP = process.env.MEDIASOUP_LISTEN_IP || "127.0.0.1";
-const CLERK_SECRET_KEY = process.env.CLERK_SECRET_KEY || "";
+const CONVEX_SITE_URL = process.env.CONVEX_SITE_URL || "";
+
+const jwks = jwksClient({
+  jwksUri: `${CONVEX_SITE_URL}/.well-known/jwks.json`,
+});
+
+function getSigningKey(header: jwt.JwtHeader, callback: jwt.SigningKeyCallback) {
+  jwks.getSigningKey(header.kid, (err, key) => {
+    if (err) {
+      callback(err);
+    } else {
+      const signingKey = key?.getPublicKey();
+      callback(null, signingKey);
+    }
+  });
+}
 
 // ---------------------------------------------------------------------------
 // Peer state
@@ -43,7 +66,7 @@ await fastify.register(helmet, {
 });
 
 await fastify.register(cors, {
-  origin: CORS_ORIGIN,
+  origin: corsOrigin,
   methods: ["GET", "POST"],
 });
 
@@ -80,25 +103,30 @@ fastify.log.info(`Server listening on ${address}`);
 // ---------------------------------------------------------------------------
 const io = new Server(fastify.server, {
   cors: {
-    origin: CORS_ORIGIN,
+    origin: corsOrigin,
     methods: ["GET", "POST"],
   },
 });
 
-// Socket.IO auth middleware – verify Clerk JWT token on connection
+// Socket.IO auth middleware – verify Convex Auth JWT token on connection
 io.use(async (socket, next) => {
   const token = socket.handshake.auth?.token;
   if (!token) {
     return next(new Error("Authentication required"));
   }
   try {
-      const verifyResult = await verifyToken(token, { secretKey: CLERK_SECRET_KEY });
-    (socket as any).authenticatedUserId = verifyResult.sub;
+    const decoded = await new Promise<jwt.JwtPayload>((resolve, reject) => {
+      jwt.verify(token, getSigningKey, { algorithms: ["RS256"] }, (err, decoded) => {
+        if (err) reject(err);
+        else resolve(decoded as jwt.JwtPayload);
+      });
+    });
+    (socket as any).authenticatedUserId = decoded.sub;
     next();
-    } catch (err) {
-      fastify.log.warn({ err, tokenPrefix: token?.substring(0, 20) }, "Socket.IO auth failed");
-      next(new Error("Invalid authentication token"));
-    }
+  } catch (err) {
+    fastify.log.warn({ err, tokenPrefix: token?.substring(0, 20) }, "Socket.IO auth failed");
+    next(new Error("Invalid authentication token"));
+  }
 });
 
 // ---------------------------------------------------------------------------
@@ -152,12 +180,11 @@ function transportDto(t: WebRtcTransport) {
 // Socket connection handler
 // ---------------------------------------------------------------------------
 io.on("connection", (socket: Socket) => {
-  const authenticatedClerkId = (socket as any).authenticatedUserId as string;
-  fastify.log.info(`Client connected: ${socket.id} (clerk: ${authenticatedClerkId})`);
+  const authenticatedSubjectId = (socket as any).authenticatedUserId as string;
+  fastify.log.info(`Client connected: ${socket.id} (subject: ${authenticatedSubjectId})`);
 
   // ── Identify ──────────────────────────────────────────────────────────────
   socket.on("voice:identify", (data: { userId: string; name: string }) => {
-    // Verify that the identified user matches the authenticated Clerk user
     const storedUser = socketToUser.get(socket.id);
     if (storedUser) return; // Already identified
 

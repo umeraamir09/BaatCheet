@@ -34,14 +34,14 @@ export function DMSidebar() {
                     : "text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-tertiary)] hover:text-white"
                 }`}
               >
-                {otherUser?.imageUrl ? (
-                  <img src={otherUser.imageUrl} alt={otherUser.name} className="w-8 h-8 rounded-full bg-gray-600 object-cover" />
+                {otherUser?.avatarUrl ? (
+                  <img src={otherUser.avatarUrl} alt={otherUser.displayName} className="w-8 h-8 rounded-full bg-gray-600 object-cover" />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-                    {otherUser?.name?.[0] || "?"}
+                    {otherUser?.displayName?.[0] || "?"}
                   </div>
                 )}
-                <span className="truncate font-medium">{otherUser?.name || "Unknown"}</span>
+                <span className="truncate font-medium">{otherUser?.displayName || "Unknown"}</span>
               </button>
             );
           })}

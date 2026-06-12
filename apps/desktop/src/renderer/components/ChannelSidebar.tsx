@@ -148,10 +148,10 @@ export function ChannelSidebar() {
 
                       return (
                         <div key={participant.userId} className="flex items-center gap-2 p-1 rounded hover:bg-[var(--color-bg-tertiary)]/50 transition-colors">
-                          {member?.imageUrl ? (
+                          {member?.avatarUrl ? (
                             <img
-                              src={member.imageUrl}
-                              alt={member.name}
+                              src={member.avatarUrl}
+                              alt={member.displayName}
                               className={`w-6 h-6 rounded-full object-cover transition-all ${
                                 isSpeaking
                                   ? "ring-2 ring-green-500 ring-offset-1 ring-offset-[var(--color-bg-secondary)]"
@@ -166,11 +166,11 @@ export function ChannelSidebar() {
                                   : ""
                               }`}
                             >
-                              {member?.name?.[0]?.toUpperCase() || "?"}
+                              {member?.displayName?.[0]?.toUpperCase() || "?"}
                             </div>
                           )}
                           <span className="text-sm text-[var(--color-text-primary)] truncate font-medium">
-                            {member?.name || "Loading..."}
+                            {member?.displayName || "Loading..."}
                           </span>
                         </div>
                       );
